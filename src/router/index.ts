@@ -1,4 +1,5 @@
 import About from '@/About.vue'
+import Details from '@/Details.vue'
 import Home from '@/Home.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -17,6 +18,13 @@ const router = createRouter({
       component: About,
       meta: {
         title: 'O nama'
+      }
+    },
+    {
+      path: '/toy/:permalink',
+      component: Details,
+      meta: {
+        title: 'Detalji'
       }
     }
   ],
