@@ -4,7 +4,7 @@ import MainLayout from './components/MainLayout.vue';
 import { ToyService } from './services/toy.service';
 import { ref } from 'vue';
 import type { ToyModel } from './models/toy.model';
-import { generateImageUrl, targetGroupText } from './utils';
+import { targetGroupText } from './utils';
 
 const route = useRoute()
 const permalink = String(route.params.permalink)
@@ -18,7 +18,7 @@ ToyService.getToyByPermalink(permalink)
     <MainLayout>
         <div class="row" v-if="toy">
             <div class="col-12 col-md-4 mb-3">
-                <img :src="generateImageUrl(toy)" class="img-fluid">
+                <img :src="toy.imageUrl" class="img-fluid">
             </div>
             <div class="col-12 col-md-8 mb-3">
                 <div class="card">

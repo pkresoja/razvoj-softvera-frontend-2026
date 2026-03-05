@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import type { ToyModel } from './models/toy.model';
 import { ToyService } from './services/toy.service';
 import MainLayout from './components/MainLayout.vue';
-import { generateImageUrl } from './utils';
 import Loading from './components/Loading.vue';
 
 const toys = ref<ToyModel[]>([])
@@ -16,7 +15,7 @@ ToyService.getToys()
     <MainLayout>
         <div class="toy-wrapper" v-if="toys.length > 0">
             <div v-for="toy of toys" class="card" style="width: 18rem;">
-                <img :src="generateImageUrl(toy)" class="card-img-top" :alt="toy.name">
+                <img :src="toy.imageUrl" class="card-img-top" :alt="toy.name">
                 <div class="card-body">
                     <h5 class="card-title">{{ toy.name }}</h5>
                     <p class="card-text">{{ toy.description }}</p>

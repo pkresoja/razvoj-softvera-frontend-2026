@@ -2,7 +2,7 @@ import type { ToyModel } from "@/models/toy.model";
 import axios from "axios";
 
 const client = axios.create({
-    baseURL: 'https://toy.pequla.com/api',
+    baseURL: 'http://localhost:3000/api',
     headers: {
         'Accept': 'application/json',
         'X-Name': 'ToyShop/v1.0'
