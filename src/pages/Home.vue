@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import type { ToyModel } from './models/toy.model';
-import { ToyService } from './services/toy.service';
-import MainLayout from './components/MainLayout.vue';
-import Loading from './components/Loading.vue';
+import type { ToyModel } from '@/models/toy.model';
+import { ToyService } from '@/services/toy.service';
+import MainLayout from '@/components/MainLayout.vue';
+import Loading from '@/components/Loading.vue';
 
 const toys = ref<ToyModel[]>([])
 

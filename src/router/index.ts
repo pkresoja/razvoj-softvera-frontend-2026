@@ -1,6 +1,8 @@
-import About from '@/About.vue'
-import Details from '@/Details.vue'
-import Home from '@/Home.vue'
+import About from '@/pages/About.vue'
+import Details from '@/pages/Details.vue'
+import Home from '@/pages/Home.vue'
+import Login from '@/pages/Login.vue'
+import User from '@/pages/User.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -25,6 +27,20 @@ const router = createRouter({
       component: Details,
       meta: {
         title: 'Detalji'
+      }
+    },
+    {
+      path: '/login',
+      component: Login,
+      meta: {
+        title: 'Prijava'
+      }
+    },
+    {
+      path: '/user',
+      component: User,
+      meta: {
+        title: 'Moj Profil'
       }
     }
   ],

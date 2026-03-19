@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import { useLogout } from '@/hooks/logout.hook';
+import { AuthService } from '@/services/auth.service';
 import { RouterLink } from 'vue-router';
 
 const year = new Date().getFullYear()
+const logout = useLogout()
 </script>
 
 <template>
@@ -27,8 +30,25 @@ const year = new Date().getFullYear()
                             <i class="fa-solid fa-circle-info"></i> O nama
                         </RouterLink>
                     </li>
+                    <template v-if="AuthService.hasAuth()">
+                        <li class="nav-item">
+                            <RouterLink class="nav-link" to="/user" active-class="active">
+                                <i class="fa-solid fa-user"></i> Profil
+                            </RouterLink>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" @click="logout()">
+                                <i class="fa-solid fa-power-off"></i> Odjava
+                            </button>
+                        </li>
+                    </template>
+                    <li v-else class="nav-item">
+                        <RouterLink class="nav-link" to="/login" active-class="active">
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i> Prijava
+                        </RouterLink>
+                    </li>
                 </ul>
-                <div class="navbar-text">
+                <div class="navbar-text" v-if="AuthService.hasAuth()">
                     <i class="fa-solid fa-user"></i> Ime Korisnika
                 </div>
             </div>

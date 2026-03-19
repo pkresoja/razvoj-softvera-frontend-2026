@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-import MainLayout from './components/MainLayout.vue';
-import { ToyService } from './services/toy.service';
+import MainLayout from '@/components/MainLayout.vue';
+import { ToyService } from '@/services/toy.service';
 import { ref } from 'vue';
-import type { ToyModel } from './models/toy.model';
-import { targetGroupText } from './utils';
+import type { ToyModel } from '@/models/toy.model';
+import { targetGroupText } from '@/utils';
 
 const route = useRoute()
 const permalink = String(route.params.permalink)
