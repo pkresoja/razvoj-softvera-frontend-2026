@@ -1,10 +1,21 @@
 <script lang="ts" setup>
 import { useLogout } from '@/hooks/logout.hook';
+import type { UserModel } from '@/models/user.model';
 import { AuthService } from '@/services/auth.service';
+import { MainService } from '@/services/main.service';
+import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
 const year = new Date().getFullYear()
 const logout = useLogout()
+const self = ref<UserModel>()
+
+onMounted(() => {
+    if (AuthService.hasAuth()) {
+        MainService.useAxios('/user/self')
+            .then(rsp => self.value = rsp.data)
+    }
+})
 </script>
 
 <template>
@@ -49,7 +60,7 @@ const logout = useLogout()
                     </li>
                 </ul>
                 <div class="navbar-text" v-if="AuthService.hasAuth()">
-                    <i class="fa-solid fa-user"></i> Ime Korisnika
+                    <i class="fa-solid fa-user"></i> {{ self?.username }}
                 </div>
             </div>
         </div>
