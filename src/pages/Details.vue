@@ -2,16 +2,49 @@
 import { useRoute } from 'vue-router';
 import MainLayout from '@/components/MainLayout.vue';
 import { ToyService } from '@/services/toy.service';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { ToyModel } from '@/models/toy.model';
 import { targetGroupText } from '@/utils';
+import { AuthService } from '@/services/auth.service';
+import { MainService } from '@/services/main.service';
+import type { FavouriteModel } from '@/models/favourite.model';
+import { Alerts } from '@/alerts';
 
 const route = useRoute()
 const permalink = String(route.params.permalink)
 const toy = ref<ToyModel>()
+const favourite = ref<FavouriteModel | null>()
 
-ToyService.getToyByPermalink(permalink)
-    .then(rsp => toy.value = rsp.data)
+function addToFav() {
+    Alerts.showConfirm('Dodajte u omiljene?', () => {
+        MainService.useAxios(`/favourite/toy/${toy.value?.toyId}`, 'post')
+            .then(rsp => loadFavourite())
+    })
+}
+
+function removeFromFav() {
+    Alerts.showConfirm('Obriši iz omiljenih?', () => {
+        MainService.useAxios(`/favourite/${favourite.value?.favouriteId}`, 'delete')
+            .then(rsp => loadFavourite())
+    })
+}
+
+async function loadFavourite() {
+    if (AuthService.hasAuth()) {
+        try {
+            const favRsp = await MainService.useAxios(`/favourite/toy/${toy.value?.toyId}`)
+            favourite.value = favRsp.data
+        } catch {
+            favourite.value = null
+        }
+    }
+}
+
+onMounted(async () => {
+    const toyRsp = await ToyService.getToyByPermalink(permalink)
+    toy.value = toyRsp.data
+    await loadFavourite()
+})
 </script>
 
 <template>
@@ -28,7 +61,8 @@ ToyService.getToyByPermalink(permalink)
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <i class="fa-solid fa-users-viewfinder"></i> Namenjeno za: <strong>{{ targetGroupText(toy) }}</strong>
+                            <i class="fa-solid fa-users-viewfinder"></i> Namenjeno za: <strong>{{ targetGroupText(toy)
+                                }}</strong>
                         </li>
                         <li class="list-group-item" :title="toy.ageGroup.description">
                             <i class="fa-solid fa-calendar-days"></i> Uzrast: <strong>{{ toy.ageGroup.name }}</strong>
@@ -37,14 +71,18 @@ ToyService.getToyByPermalink(permalink)
                             <i class="fa-solid fa-font-awesome"></i> Tip: <strong>{{ toy.type.name }}</strong>
                         </li>
                         <li class="list-group-item">
-                            <i class="fa-solid fa-clock-rotate-left"></i> Datum proizvodnje: <strong>{{ toy.productionDate }}</strong>
+                            <i class="fa-solid fa-clock-rotate-left"></i> Datum proizvodnje: <strong>{{
+                                toy.productionDate }}</strong>
                         </li>
                         <li class="list-group-item">
                             <i class="fa-solid fa-money-bill-wave"></i> Cena: <strong>{{ toy.price }} RSD</strong>
                         </li>
                     </ul>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-warning m-1">
+                    <div class="card-footer" v-if="AuthService.hasAuth()">
+                        <button type="button" class="btn btn-danger m-1" v-if="favourite" @click="removeFromFav">
+                            <i class="fa-solid fa-cancel"></i> Ukloni iz omiljenih
+                        </button>
+                        <button type="button" class="btn btn-warning m-1" v-else @click="addToFav">
                             <i class="fa-solid fa-bookmark"></i> Dodaj u omiljene
                         </button>
                         <button type="button" class="btn btn-success m-1">

@@ -12,6 +12,8 @@ const client = axios.create({
     }
 })
 
+type AxiosMethod = 'get' | 'post' | 'put' | 'delete'
+
 export class MainService {
     static async login(username: string, password: string) {
         return await client.request({
@@ -23,7 +25,7 @@ export class MainService {
         })
     }
 
-    static async useAxios(url: string, method: string = 'get', body: object = {}) {
+    static async useAxios(url: string, method: AxiosMethod = 'get', body: object = {}) {
         let rsp: AxiosResponse
 
         try {
@@ -74,6 +76,10 @@ export class MainService {
 
         if (rsp.status == 404) {
             throw new Error('NOT_FOUND')
+        }
+
+        if (rsp.status != 200 && rsp.status != 204) {
+            throw new Error('BAD_REQUEST')
         }
 
         return rsp

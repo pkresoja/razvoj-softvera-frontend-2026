@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Alerts } from '@/alerts';
 import { useLogout } from '@/hooks/logout.hook';
 import type { UserModel } from '@/models/user.model';
 import { AuthService } from '@/services/auth.service';
@@ -9,6 +10,12 @@ import { RouterLink } from 'vue-router';
 const year = new Date().getFullYear()
 const logout = useLogout()
 const self = ref<UserModel>()
+
+function doLogout() {
+    Alerts.showConfirm('Da li sigurno želite da se odjavite?', () => {
+        logout()
+    })
+}
 
 onMounted(() => {
     if (AuthService.hasAuth()) {
@@ -48,7 +55,7 @@ onMounted(() => {
                             </RouterLink>
                         </li>
                         <li class="nav-item">
-                            <button type="button" class="nav-link" @click="logout()">
+                            <button type="button" class="nav-link" @click="doLogout()">
                                 <i class="fa-solid fa-power-off"></i> Odjava
                             </button>
                         </li>
