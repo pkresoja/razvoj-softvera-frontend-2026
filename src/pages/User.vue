@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Alerts } from '@/alerts';
 import Loading from '@/components/Loading.vue';
 import MainLayout from '@/components/MainLayout.vue';
 import type { FavouriteModel } from '@/models/favourite.model';
@@ -29,6 +30,13 @@ onMounted(() => {
             favourites.value = rsp.data
         })
 })
+
+function removeFromFav(fav: FavouriteModel) {
+    Alerts.showConfirm('Obriši iz omiljenih?', () => {
+        MainService.useAxios(`/favourite/${fav.favouriteId}`, 'delete')
+            .then(rsp => favourites.value = favourites.value.filter(obj => obj.favouriteId !== fav.favouriteId))
+    })
+}
 </script>
 
 <template>
@@ -56,6 +64,7 @@ onMounted(() => {
                                 <th scope="col">Tip</th>
                                 <th scope="col">Cena</th>
                                 <th scope="col">Dodato</th>
+                                <th scope="col">Opcije</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,6 +75,11 @@ onMounted(() => {
                                 <td>{{ fav.toy.type.name }}</td>
                                 <td>{{ fav.toy.price }}</td>
                                 <td>{{ formatDate(fav.createdAt) }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-danger" @click="removeFromFav(fav)">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
