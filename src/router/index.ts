@@ -1,4 +1,5 @@
 import About from '@/pages/About.vue'
+import Cart from '@/pages/Cart.vue'
 import Details from '@/pages/Details.vue'
 import Home from '@/pages/Home.vue'
 import Login from '@/pages/Login.vue'
@@ -41,6 +42,13 @@ const router = createRouter({
       component: User,
       meta: {
         title: 'Moj Profil'
+      }
+    },
+    {
+      path: '/cart',
+      component: Cart,
+      meta: {
+        title: 'Korpa'
       }
     }
   ],

@@ -55,6 +55,11 @@ onMounted(() => {
                             </RouterLink>
                         </li>
                         <li class="nav-item">
+                            <RouterLink class="nav-link" to="/cart" active-class="active">
+                                <i class="fa-solid fa-cart-shopping"></i> Korpa
+                            </RouterLink>
+                        </li>
+                        <li class="nav-item">
                             <button type="button" class="nav-link" @click="doLogout()">
                                 <i class="fa-solid fa-power-off"></i> Odjava
                             </button>
