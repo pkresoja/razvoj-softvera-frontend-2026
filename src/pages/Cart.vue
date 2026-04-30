@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { Alerts } from '@/alerts';
 import MainLayout from '@/components/MainLayout.vue';
+import router from '@/router';
 import { MainService } from '@/services/main.service';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const cartItems = ref<any[]>([])
 MainService.useAxios('/cart')
@@ -17,6 +19,9 @@ function increment(obj: any) {
     for (let cartItem of cartItems.value) {
         if (cartItem.cartItemId == obj.cartItemId) {
             cartItem.count++
+
+            // update on backend
+            updateCount(cartItem.cartItemId, cartItem.count)
         }
     }
 }
@@ -26,8 +31,30 @@ function decrement(obj: any) {
         if (cartItem.cartItemId == obj.cartItemId) {
             if (cartItem.count == 1) return
             cartItem.count--
+
+            // update on backend
+            updateCount(cartItem.cartItemId, cartItem.count)
         }
     }
+}
+
+function updateCount(cartItemId: number, count: number) {
+    if (count < 1) return
+    MainService.useAxios(`/cart/${cartItemId}/count/${count}`, 'put')
+}
+
+function remove(cartItem: any) {
+    Alerts.showConfirm(`Da li sigurno želite da orbišete ${cartItem.toy.name}?`, () => {
+        MainService.useAxios(`/cart/${cartItem.cartItemId}`, 'delete')
+        cartItems.value = cartItems.value.filter(ci => ci.cartItemId !== cartItem.cartItemId)
+    })
+}
+
+function createInvoice() {
+    Alerts.showConfirm(`Da li sigurno želite da platite?`, () => {
+        MainService.useAxios(`/cart/invoice`, 'post')
+        router.push('/user')
+    })
 }
 </script>
 
@@ -54,13 +81,13 @@ function decrement(obj: any) {
                                 <div class="input-group">
                                     <button class="btn btn-sm btn-outline-secondary" @click="decrement(obj)">-</button>
                                     <input type="number" class="form-control form-control-sm text-center"
-                                        v-model="obj.count">
+                                        v-model="obj.count" @change="updateCount(obj.cartItemId, obj.count)" min="1">
                                     <button class="btn btn-sm btn-outline-secondary" @click="increment(obj)">+</button>
                                 </div>
                             </td>
                             <td scope="row">{{ obj.toy.price * obj.count }} RSD</td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-danger">
+                                <button type="button" class="btn btn-sm btn-danger" @click="remove(obj)">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </td>
@@ -72,7 +99,7 @@ function decrement(obj: any) {
                 <span class="h6">
                     Ukupno za plaćanje: <strong class="h5">{{ total }} RSD</strong>
                 </span>
-                <button class="btn btn-success px-3">
+                <button class="btn btn-success px-3" @click="createInvoice">
                     <i class="fa-solid fa-credit-card"></i> Plati
                 </button>
             </div>
@@ -91,6 +118,7 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Firefox */
 input[type="number"] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .btn-outline-secondary {

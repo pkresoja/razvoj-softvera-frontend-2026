@@ -13,6 +13,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 const self = ref<UserModel>()
 const favourites = ref<FavouriteModel[]>([])
+const invoices = ref<any[]>()
 
 onMounted(() => {
     if (!AuthService.hasAuth()) {
@@ -28,6 +29,11 @@ onMounted(() => {
     MainService.useAxios('/favourite')
         .then(rsp => {
             favourites.value = rsp.data
+        })
+
+    MainService.useAxios('/cart/invoice')
+        .then(rsp => {
+            invoices.value = rsp.data
         })
 })
 
@@ -48,6 +54,36 @@ function removeFromFav(fav: FavouriteModel) {
                 </div>
                 <div class="card-body">
                     <pre>{{ self }}</pre>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>Računi</strong>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Datum</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Opcije</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="inv in invoices">
+                                <th scope="row">{{ formatDate(inv.createdAt) }}</th>
+                                <td>
+                                    <span class="text-success fw-bold" v-if="inv.paidAt">Plaćeno</span>
+                                    <span class="text-warning fw-bold" v-else>Nije Plaćeno</span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-success">
+                                        <i class="fa-regular fa-credit-card"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="card">

@@ -20,7 +20,7 @@ function doLogin() {
             router.push('/user')
         })
         .catch(e => {
-            Alerts.error('Korisničko ime ili lozinka su neispravni!')
+            Alerts.showError('Korisničko ime ili lozinka su neispravni!')
         })
 }
 </script>

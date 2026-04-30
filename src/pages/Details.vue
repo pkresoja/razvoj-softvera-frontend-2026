@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import MainLayout from '@/components/MainLayout.vue';
 import { ToyService } from '@/services/toy.service';
 import { onMounted, ref } from 'vue';
@@ -11,6 +11,7 @@ import type { FavouriteModel } from '@/models/favourite.model';
 import { Alerts } from '@/alerts';
 
 const route = useRoute()
+const router = useRouter()
 const permalink = String(route.params.permalink)
 const toy = ref<ToyModel>()
 const favourite = ref<FavouriteModel | null>()
@@ -40,6 +41,11 @@ async function loadFavourite() {
     }
 }
 
+function addToCart() {
+    MainService.useAxios(`/cart/toy/${toy.value?.toyId}`, 'post')
+        .then(rsp => router.push('/cart'))
+}
+
 onMounted(async () => {
     const toyRsp = await ToyService.getToyByPermalink(permalink)
     toy.value = toyRsp.data
@@ -62,7 +68,7 @@ onMounted(async () => {
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <i class="fa-solid fa-users-viewfinder"></i> Namenjeno za: <strong>{{ targetGroupText(toy)
-                                }}</strong>
+                            }}</strong>
                         </li>
                         <li class="list-group-item" :title="toy.ageGroup.description">
                             <i class="fa-solid fa-calendar-days"></i> Uzrast: <strong>{{ toy.ageGroup.name }}</strong>
@@ -85,7 +91,7 @@ onMounted(async () => {
                         <button type="button" class="btn btn-warning m-1" v-else @click="addToFav">
                             <i class="fa-solid fa-bookmark"></i> Dodaj u omiljene
                         </button>
-                        <button type="button" class="btn btn-success m-1">
+                        <button type="button" class="btn btn-success m-1" @click="addToCart">
                             <i class="fa-solid fa-basket-shopping"></i> Dodaj u korpu
                         </button>
                     </div>
