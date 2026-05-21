@@ -44,20 +44,15 @@ onMounted(() => {
                             <i class="fa-solid fa-house"></i> Početna
                         </RouterLink>
                     </li>
-                    <li class="nav-item">
-                        <RouterLink class="nav-link" to="/about" active-class="active">
-                            <i class="fa-solid fa-circle-info"></i> O nama
-                        </RouterLink>
-                    </li>
                     <template v-if="AuthService.hasAuth()">
-                        <li class="nav-item">
-                            <RouterLink class="nav-link" to="/user" active-class="active">
-                                <i class="fa-solid fa-user"></i> Profil
-                            </RouterLink>
-                        </li>
                         <li class="nav-item">
                             <RouterLink class="nav-link" to="/cart" active-class="active">
                                 <i class="fa-solid fa-cart-shopping"></i> Korpa
+                            </RouterLink>
+                        </li>
+                        <li class="nav-item">
+                            <RouterLink class="nav-link" to="/user" active-class="active">
+                                <i class="fa-solid fa-user"></i> Profil
                             </RouterLink>
                         </li>
                         <li class="nav-item">

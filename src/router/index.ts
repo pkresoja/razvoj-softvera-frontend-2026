@@ -1,7 +1,7 @@
-import About from '@/pages/About.vue'
 import Cart from '@/pages/Cart.vue'
 import Details from '@/pages/Details.vue'
 import Home from '@/pages/Home.vue'
+import Invoice from '@/pages/Invoice.vue'
 import Login from '@/pages/Login.vue'
 import User from '@/pages/User.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -14,13 +14,6 @@ const router = createRouter({
       component: Home,
       meta: {
         title: 'Početna'
-      }
-    },
-    {
-      path: '/about',
-      component: About,
-      meta: {
-        title: 'O nama'
       }
     },
     {
@@ -50,8 +43,15 @@ const router = createRouter({
       meta: {
         title: 'Korpa'
       }
-    }
-  ],
+    },
+    {
+      path: '/invoice/:id',
+      component: Invoice,
+      meta: {
+        title: 'Račun'
+      }
+    },
+  ]
 })
 
 router.afterEach((to, from, next) => {

@@ -94,6 +94,9 @@ function pay(inv: any) {
                                     <button type="button" class="btn btn-sm btn-success" @click="pay(inv)" v-if="!inv.paidAt">
                                         <i class="fa-regular fa-credit-card"></i>
                                     </button>
+                                    <RouterLink :to="`/invoice/${inv.invoiceId}`" class="btn btn-sm btn-primary" v-else>
+                                        <i class="fa-solid fa-file-invoice"></i>
+                                    </RouterLink>
                                 </td>
                             </tr>
                         </tbody>

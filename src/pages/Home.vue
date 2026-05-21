@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import type { ToyModel } from '@/models/toy.model';
-import { ToyService } from '@/services/toy.service';
 import MainLayout from '@/components/MainLayout.vue';
 import Loading from '@/components/Loading.vue';
 import { MainService } from '@/services/main.service';
@@ -13,7 +12,7 @@ const router = useRouter()
 const logout = useLogout()
 const toys = ref<ToyModel[]>([])
 
-ToyService.getToys()
+MainService.useAxios('/toy')
     .then(rsp => toys.value = rsp.data)
 
 function addToCart(toy: ToyModel) {

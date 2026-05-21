@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
 import MainLayout from '@/components/MainLayout.vue';
-import { ToyService } from '@/services/toy.service';
 import { onMounted, ref } from 'vue';
 import type { ToyModel } from '@/models/toy.model';
 import { targetGroupText } from '@/utils';
@@ -52,7 +51,7 @@ function addToCart() {
 }
 
 onMounted(async () => {
-    const toyRsp = await ToyService.getToyByPermalink(permalink)
+    const toyRsp = await MainService.useAxios(`/toy/permalink/${permalink}`)
     toy.value = toyRsp.data
     await loadFavourite()
 })

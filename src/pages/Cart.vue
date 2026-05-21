@@ -2,12 +2,13 @@
 import { Alerts } from '@/alerts';
 import MainLayout from '@/components/MainLayout.vue';
 import { useLogout } from '@/hooks/logout.hook';
+import type { CartItemModel } from '@/models/cart.model';
 import router from '@/router';
 import { MainService } from '@/services/main.service';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 const logout = useLogout()
-const cartItems = ref<any[]>([])
+const cartItems = ref<CartItemModel[]>([])
 MainService.useAxios('/cart')
     .then(rsp => cartItems.value = rsp.data)
     .catch(() => logout())
@@ -106,7 +107,7 @@ function createInvoice() {
                 <span class="h6">
                     Ukupno za plaćanje: <strong class="h5">{{ total }} RSD</strong>
                 </span>
-                <button class="btn btn-success px-3" @click="createInvoice">
+                <button class="btn btn-success px-3" @click="createInvoice" :disabled="cartItems.length == 0">
                     <i class="fa-solid fa-credit-card"></i> Plati
                 </button>
             </div>
