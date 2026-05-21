@@ -9,9 +9,11 @@ import { AuthService } from '@/services/auth.service';
 import { MainService } from '@/services/main.service';
 import type { FavouriteModel } from '@/models/favourite.model';
 import { Alerts } from '@/alerts';
+import { useLogout } from '@/hooks/logout.hook';
 
 const route = useRoute()
 const router = useRouter()
+const logout = useLogout()
 const permalink = String(route.params.permalink)
 const toy = ref<ToyModel>()
 const favourite = ref<FavouriteModel | null>()
@@ -20,6 +22,7 @@ function addToFav() {
     Alerts.showConfirm('Dodajte u omiljene?', () => {
         MainService.useAxios(`/favourite/toy/${toy.value?.toyId}`, 'post')
             .then(rsp => loadFavourite())
+            .catch(() => logout())
     })
 }
 
@@ -27,6 +30,7 @@ function removeFromFav() {
     Alerts.showConfirm('Obriši iz omiljenih?', () => {
         MainService.useAxios(`/favourite/${favourite.value?.favouriteId}`, 'delete')
             .then(rsp => loadFavourite())
+            .catch(() => logout())
     })
 }
 
@@ -44,6 +48,7 @@ async function loadFavourite() {
 function addToCart() {
     MainService.useAxios(`/cart/toy/${toy.value?.toyId}`, 'post')
         .then(rsp => router.push('/cart'))
+        .catch(() => logout())
 }
 
 onMounted(async () => {

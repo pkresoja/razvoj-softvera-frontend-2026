@@ -2,6 +2,7 @@
 import { Alerts } from '@/alerts';
 import Loading from '@/components/Loading.vue';
 import MainLayout from '@/components/MainLayout.vue';
+import { useLogout } from '@/hooks/logout.hook';
 import type { FavouriteModel } from '@/models/favourite.model';
 import type { UserModel } from '@/models/user.model';
 import { AuthService } from '@/services/auth.service';
@@ -14,6 +15,7 @@ const router = useRouter()
 const self = ref<UserModel>()
 const favourites = ref<FavouriteModel[]>([])
 const invoices = ref<any[]>()
+const logout = useLogout()
 
 onMounted(() => {
     if (!AuthService.hasAuth()) {
@@ -25,22 +27,34 @@ onMounted(() => {
         .then(rsp => {
             self.value = rsp.data
         })
+        .catch(() => logout())
 
     MainService.useAxios('/favourite')
         .then(rsp => {
             favourites.value = rsp.data
         })
+        .catch(() => logout())
 
     MainService.useAxios('/cart/invoice')
         .then(rsp => {
             invoices.value = rsp.data
         })
+        .catch(() => logout())
 })
 
 function removeFromFav(fav: FavouriteModel) {
     Alerts.showConfirm('Obriši iz omiljenih?', () => {
         MainService.useAxios(`/favourite/${fav.favouriteId}`, 'delete')
             .then(rsp => favourites.value = favourites.value.filter(obj => obj.favouriteId !== fav.favouriteId))
+            .catch(() => logout())
+    })
+}
+
+function pay(inv: any) {
+    Alerts.showConfirm('Plati racun?', () => {
+        MainService.useAxios(`/invoice/${inv.invoiceId}/pay`, 'put')
+            .then(rsp => window.location.reload())
+            .catch(() => logout())
     })
 }
 </script>
@@ -77,7 +91,7 @@ function removeFromFav(fav: FavouriteModel) {
                                     <span class="text-warning fw-bold" v-else>Nije Plaćeno</span>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-success">
+                                    <button type="button" class="btn btn-sm btn-success" @click="pay(inv)" v-if="!inv.paidAt">
                                         <i class="fa-regular fa-credit-card"></i>
                                     </button>
                                 </td>

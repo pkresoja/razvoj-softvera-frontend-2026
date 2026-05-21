@@ -17,7 +17,10 @@ function doLogin() {
                 access: rsp.data.access,
                 refresh: rsp.data.refresh
             })
-            router.push('/user')
+
+            const returnTo = sessionStorage.getItem('return_to')
+            sessionStorage.removeItem('return_to')
+            router.push(returnTo ?? '/user')
         })
         .catch(e => {
             Alerts.showError('Korisničko ime ili lozinka su neispravni!')

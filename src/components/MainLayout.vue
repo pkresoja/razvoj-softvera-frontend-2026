@@ -21,6 +21,7 @@ onMounted(() => {
     if (AuthService.hasAuth()) {
         MainService.useAxios('/user/self')
             .then(rsp => self.value = rsp.data)
+            .catch(() => logout())
     }
 })
 </script>

@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import { Alerts } from '@/alerts';
 import MainLayout from '@/components/MainLayout.vue';
+import { useLogout } from '@/hooks/logout.hook';
 import router from '@/router';
 import { MainService } from '@/services/main.service';
 import { computed, ref, watch } from 'vue';
 
+const logout = useLogout()
 const cartItems = ref<any[]>([])
 MainService.useAxios('/cart')
     .then(rsp => cartItems.value = rsp.data)
+    .catch(() => logout())
 
 const total = computed(() =>
     cartItems.value.reduce(
@@ -41,19 +44,23 @@ function decrement(obj: any) {
 function updateCount(cartItemId: number, count: number) {
     if (count < 1) return
     MainService.useAxios(`/cart/${cartItemId}/count/${count}`, 'put')
+        .catch(() => logout())
 }
 
 function remove(cartItem: any) {
     Alerts.showConfirm(`Da li sigurno želite da orbišete ${cartItem.toy.name}?`, () => {
         MainService.useAxios(`/cart/${cartItem.cartItemId}`, 'delete')
-        cartItems.value = cartItems.value.filter(ci => ci.cartItemId !== cartItem.cartItemId)
+            .then(() => cartItems.value = cartItems.value.filter(ci => ci.cartItemId !== cartItem.cartItemId))
+            .catch(() => logout())
     })
 }
 
 function createInvoice() {
     Alerts.showConfirm(`Da li sigurno želite da platite?`, () => {
         MainService.useAxios(`/cart/invoice`, 'post')
-        router.push('/user')
+            .then(() => router.push('/user'))
+            .catch(() => logout())
+
     })
 }
 </script>
